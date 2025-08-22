@@ -1,0 +1,23 @@
+[
+{
+  "id": 1000,
+  "name": "Vaishnavi",
+  "email": "Vaish@gmail.com",
+  "role":"Developer",
+  "active": true
+},
+{
+  "id": 1001,
+  "name": "Sakshi",
+  "email": "Sakshi@example.com",
+  "role":"Developer",
+  "active": true
+},
+{
+  "id": 1002,
+  "name": "Novira",
+  "email": "Novira@example.com",
+  "role":"Developer",
+  "active": true
+}
+]

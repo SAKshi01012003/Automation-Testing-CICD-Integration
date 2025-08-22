@@ -1,0 +1,43 @@
+# api-test.yml
+name: API Contract Testing
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tests/api_collection.json'
+      - 'tests/payloads/**'
+
+jobs:
+  run-api-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Newman and HTML Extra Reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Run Postman Collection with Newman
+        id: run_newman_tests
+        run: |
+          # Use Newman to run the collection and generate the HTML report
+          # The -r flag specifies the reporters: cli (for console output) and htmlextra (for HTML report)
+          # The --reporter-htmlextra-export flag defines the output file path
+          newman run tests/api_collection.json --disable-unicode --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
+
+      - name: Upload HTML report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-report
+          path: results_report.html

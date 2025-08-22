@@ -1,0 +1,499 @@
+{
+	"info": {
+		"_postman_id": "109a4877-9599-4636-9c1d-e6844cdea057",
+		"name": "Test Cases Automation Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27495142"
+	},
+	"item": [
+		{
+			"name": "Response Validation Tests",
+			"item": [
+				{
+					"name": "Response Validation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validate response body fields\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonData).to.have.property(\"userId\");\r",
+									"    pm.expect(jsonData.userId).to.be.a(\"number\");\r",
+									"\r",
+									"    pm.expect(jsonData.name).to.eql(\"Vaishnavi\");\r",
+									"\r",
+									"    const emailRegex = /^([a-z0-9\\._]+)@((?:gmail|googlemail)\\.com)$/i; \r",
+									"    pm.expect(jsonData.email).to.match(emailRegex);\r",
+									"\r",
+									"    pm.expect(jsonData.role).to.be.a(\"string\");\r",
+									"\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Response Header Validation\r",
+									"pm.test(\"Validate response headers\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json;charset=UTF-8\");\r",
+									"    pm.expect(pm.response.headers.get(\"Cache-Control\")).to.include(\"no-cache\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Should return 200 for valid input\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should return 400 for invalid input\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"/* Query Parameter Validation*/\r",
+									"// pm.test(\"Check if response matches query parameter\", function () {\r",
+									"//     let jsonData = pm.response.json();\r",
+									"//     pm.expect(jsonData.userId).to.eql(parseInt(pm.request.url.query.get(\"userId\")));\r",
+									"// });\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "Syngenta@21",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0023825691",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"userId\":{{id}},\r\n  \"role\": \"{{role}}\",\r\n  \"email\": \"{{email}}\"\r\n}\r\n\r\n\r\n// {\r\n//   \"name\": \"Vaishnavi\",\r\n//   \"userId\":2,\r\n//   \"role\": \"Developer\",\r\n//   \"email\": \"vaishnavi@gmail.com\"\r\n// }\r\n\r\n//Invalid Input test\r\n\r\n/* Missing UserId */\r\n// {\r\n//   \"name\": \"Vaishnavi\",\r\n//   \"role\": \"Developer\",\r\n//   \"email\": \"vaishnavi@gmail.com\"\r\n// }\r\n\r\n\r\n/* role feild datatype check */\r\n// {\r\n//   \"name\": \"Vaishnavi\",\r\n//   \"userId\":2,\r\n//   \"role\": 10101,\r\n//   \"email\": \"vaishnavi@gmail.com\"\r\n// }\r\n\r\n\r\n\r\n/* name feild not Vaishnavi */\r\n// {\r\n//   \"name\": \"Rushi\",\r\n//   \"userId\":2,\r\n//   \"role\": \"Developer\",\r\n//   \"email\": \"vaishnavi@gmail.com\"\r\n// }\r\n\r\n\r\n/* Invalid gmail format */\r\n// {\r\n//   \"name\": \"Vaishnavi\",\r\n//   \"userId\":2,\r\n//   \"role\": \"Developer\",\r\n//   \"email\": \"vaishnavi@umail.com\"\r\n// }\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://syn-int-suite-ent-qgjsk2hi.it-cpi024-rt.cfapps.eu10-002.hana.ondemand.com/http/automationTesting1",
+							"protocol": "https",
+							"host": [
+								"syn-int-suite-ent-qgjsk2hi",
+								"it-cpi024-rt",
+								"cfapps",
+								"eu10-002",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"automationTesting1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Input Validation Test",
+			"item": [
+				{
+					"name": "Both Input Validation and Response validation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// let requestBody = pm.request.body.raw;  // get raw body string\r",
+									"// let jsonData = JSON.parse(requestBody); // convert to JSON\r",
+									"let jsonData = JSON.parse(pm.request.body.raw);\r",
+									"console.log(\"Extracting the body for the Input Validation: \",jsonData)\r",
+									"\r",
+									"pm.test(\"Email should be in valid format\", function () {\r",
+									"    let emailRegex = /^([a-z0-9\\._]+)@((?:gmail|googlemail)\\.com)$/i;\r",
+									"    pm.expect(emailRegex.test(jsonData.email)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Role should be a string\", function () {\r",
+									"    pm.expect(typeof jsonData.role).to.eql(\"string\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validate response body fields\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonData).to.have.property(\"userId\");\r",
+									"    pm.expect(jsonData.userId).to.be.a(\"number\");\r",
+									"\r",
+									"    pm.expect(jsonData.name).to.eql(\"Vaishnavi\");\r",
+									"\r",
+									"    const emailRegex = /^([a-z0-9\\._]+)@((?:gmail|googlemail)\\.com)$/i; \r",
+									"    pm.expect(jsonData.email).to.match(emailRegex);\r",
+									"\r",
+									"    pm.expect(jsonData.role).to.be.a(\"string\");\r",
+									"\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Response Header Validation\r",
+									"pm.test(\"Validate response headers\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json;charset=UTF-8\");\r",
+									"    pm.expect(pm.response.headers.get(\"Cache-Control\")).to.include(\"no-cache\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Should return 200 for valid input\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should return 400 for invalid input\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"/* Query Parameter Validation*/\r",
+									"// pm.test(\"Check if response matches query parameter\", function () {\r",
+									"//     let jsonData = pm.response.json();\r",
+									"//     pm.expect(jsonData.userId).to.eql(parseInt(pm.request.url.query.get(\"userId\")));\r",
+									"// });\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "Syngenta@21",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0023825691",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Vaishnavi\",\r\n  \"userId\":2,\r\n  \"role\": \"Developer\",\r\n  \"email\": \"vaishnavi@gmail.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://syn-int-suite-ent-qgjsk2hi.it-cpi024-rt.cfapps.eu10-002.hana.ondemand.com/http/automationTesting1",
+							"protocol": "https",
+							"host": [
+								"syn-int-suite-ent-qgjsk2hi",
+								"it-cpi024-rt",
+								"cfapps",
+								"eu10-002",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"automationTesting1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "JSON Schema Validation",
+			"item": [
+				{
+					"name": "Response Schema validation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": { \"type\": \"integer\" },\r",
+									"    \"name\": { \"type\": \"string\" },\r",
+									"    \"email\": { \"type\": \"string\", \"format\": \"email\" },\r",
+									"    \"active\": { \"type\": \"boolean\" }\r",
+									"  },\r",
+									"  \"required\": [\"id\", \"name\", \"email\", \"active\"]\r",
+									"};\r",
+									"\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"//Using tv4\r",
+									"pm.test(\"Response schema is valid\", function () {\r",
+									"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"// // OR Using Ajv (more advanced)\r",
+									"// const Ajv = require('ajv');\r",
+									"// const ajv = new Ajv();\r",
+									"// const validate = ajv.compile(schema);\r",
+									"\r",
+									"// pm.test(\"Response schema is valid (Ajv)\", function () {\r",
+									"//     pm.expect(validate(response), JSON.stringify(validate.errors)).to.be.true;\r",
+									"// });\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "Syngenta@21",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0023825691",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 101,\r\n  \"name\": \"Alice\",\r\n  \"email\": \"alice@example.com\",\r\n  \"role\":\"Developer\",\r\n  \"active\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://syn-int-suite-ent-qgjsk2hi.it-cpi024-rt.cfapps.eu10-002.hana.ondemand.com/http/automationTesting1",
+							"protocol": "https",
+							"host": [
+								"syn-int-suite-ent-qgjsk2hi",
+								"it-cpi024-rt",
+								"cfapps",
+								"eu10-002",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"automationTesting1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Both Input Output Json Schema Validation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const Ajv = require('ajv'); // Postman has AJV library available\r",
+									"const ajv = new Ajv();\r",
+									"\r",
+									"// Parse request body JSON\r",
+									"let requestData;\r",
+									"try {\r",
+									"  requestData = JSON.parse(pm.request.body.raw);\r",
+									"} catch (e) {\r",
+									"  throw new Error(\"❌ Request body is not valid JSON!\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"// Define input JSON schema\r",
+									"let inputSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"name\": { \"type\": \"string\" },\r",
+									"        \"email\": { \r",
+									"            \"type\": \"string\", \r",
+									"            \"format\": \"email\" \r",
+									"        },\r",
+									"        \"role\": { \"type\": \"string\" }\r",
+									"    },\r",
+									"    \"required\": [\"name\", \"email\", \"role\"]\r",
+									"};\r",
+									"\r",
+									"\r",
+									"let validate = ajv.compile(inputSchema);\r",
+									"let valid = validate(requestData);\r",
+									"\r",
+									"// Run the test\r",
+									"pm.test(\"Validate request body schema\", function () {\r",
+									"    pm.expect(valid, JSON.stringify(validate.errors)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": { \"type\": \"integer\" },\r",
+									"    \"name\": { \"type\": \"string\" },\r",
+									"    \"email\": { \"type\": \"string\", \"format\": \"email\" },\r",
+									"    \"active\": { \"type\": \"boolean\" }\r",
+									"  },\r",
+									"  \"required\": [\"id\", \"name\", \"email\", \"active\"]\r",
+									"};\r",
+									"\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"//Using tv4\r",
+									"pm.test(\"Response schema is valid\", function () {\r",
+									"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"// // OR Using Ajv (more advanced)\r",
+									"// const Ajv = require('ajv');\r",
+									"// const ajv = new Ajv();\r",
+									"// const validate = ajv.compile(schema);\r",
+									"\r",
+									"// pm.test(\"Response schema is valid (Ajv)\", function () {\r",
+									"//     pm.expect(validate(response), JSON.stringify(validate.errors)).to.be.true;\r",
+									"// });\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "Syngenta@21",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0023825691",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 101,\r\n  \"name\": \"Alice\",\r\n  \"email\": \"alice@example.com\",\r\n  \"role\":\"Developer\",\r\n  \"active\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://syn-int-suite-ent-qgjsk2hi.it-cpi024-rt.cfapps.eu10-002.hana.ondemand.com/http/automationTesting1",
+							"protocol": "https",
+							"host": [
+								"syn-int-suite-ent-qgjsk2hi",
+								"it-cpi024-rt",
+								"cfapps",
+								"eu10-002",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"automationTesting1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
