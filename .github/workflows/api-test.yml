@@ -1,5 +1,5 @@
 # api-test.yml
-name: API Contract Testing
+name: API  Testing
 
 on:
   push:
