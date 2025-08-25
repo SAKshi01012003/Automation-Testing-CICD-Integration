@@ -48,20 +48,108 @@
 # */
 
 
+# # api-test.yml
+# name: API Testing
+
+# on:
+#   # This trigger runs the workflow when files are pushed
+#   # push:
+#   #   branches:
+#   #     - main
+#   #   paths:
+#   #     - 'tests/api_collection.json'
+#   #     - 'tests/payloads/**'
+#   #     - 'tests/test_data.json'
+  
+#   # This trigger allows for manual runs with user inputs
+#   workflow_dispatch:
+#     inputs:
+#       api_url:
+#         description: 'API Endpoint URL'
+#         required: true
+#         type: string
+#       http_method:
+#         description: 'HTTP Method'
+#         required: true
+#         type: choice
+#         options:
+#           - GET
+#           - POST
+#           - PUT
+#           - DELETE
+#       auth_config_json:
+#         description: 'JSON for Authentication (e.g., { "type": "Bearer", "token": "your_token" })'
+#         required: false
+#         type: string
+#       folder_name:
+#         description: 'Optional: Specific folder in the collection to run'
+#         required: false
+#         type: string
+
+
+# jobs:
+#   run-api-tests:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '18'
+
+#       - name: Install Newman and HTML Extra Reporter
+#         run: |
+#           npm install -g newman
+#           npm install -g newman-reporter-htmlextra
+
+#       - name: Run Postman Collection with Newman
+#         id: run_newman_tests
+#         run: |
+#           NEWMAN_CMD="newman run tests/api_collection.json"
+          
+#           # Add folder flag if provided. Using -n check to avoid errors.
+#           if [ -n "${{ github.event.inputs.folder_name }}" ]; then
+#             NEWMAN_CMD="${NEWMAN_CMD} --folder \"${{ github.event.inputs.folder_name }}\""
+#           fi
+          
+#           # Payload file path is now hardcoded as requested
+#           NEWMAN_CMD="${NEWMAN_CMD} -d \"tests/payloads/testdata.json\""
+          
+#           # Add global variables from user inputs
+#           NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=${{ github.event.inputs.api_url }}"
+#           NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method=${{ github.event.inputs.http_method }}"
+          
+#           if [ -n "${{ github.event.inputs.auth_config_json }}" ]; then
+#             NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_config_json=${{ github.event.inputs.auth_config_json }}"
+#           fi
+
+#           echo "Executing command: ${NEWMAN_CMD}"
+
+#           # Run the final command
+#           ${NEWMAN_CMD} --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
+
+#       - name: Upload HTML report artifact
+#         # This conditional ensures the step always runs
+#         # if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: api-test-report
+#           path: results_report.html
+
+
+
+
+
 # api-test.yml
 name: API Testing
 
 on:
-  # This trigger runs the workflow when files are pushed
-  # push:
-  #   branches:
-  #     - main
-  #   paths:
-  #     - 'tests/api_collection.json'
-  #     - 'tests/payloads/**'
-  #     - 'tests/test_data.json'
-  
   # This trigger allows for manual runs with user inputs
+  # The push trigger has been removed as requested
   workflow_dispatch:
     inputs:
       api_url:
@@ -77,15 +165,18 @@ on:
           - POST
           - PUT
           - DELETE
-      auth_config_json:
-        description: 'JSON for Authentication (e.g., { "type": "Bearer", "token": "your_token" })'
+      username:
+        description: 'Username for Basic Authentication'
+        required: false
+        type: string
+      password:
+        description: 'Password for Basic Authentication'
         required: false
         type: string
       folder_name:
         description: 'Optional: Specific folder in the collection to run'
         required: false
         type: string
-
 
 jobs:
   run-api-tests:
@@ -112,9 +203,9 @@ jobs:
           NEWMAN_CMD="newman run tests/api_collection.json"
           
           # Add folder flag if provided. Using -n check to avoid errors.
-          if [ -n "${{ github.event.inputs.folder_name }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --folder \"${{ github.event.inputs.folder_name }}\""
-          fi
+          # if [ -n "${{ github.event.inputs.folder_name }}" ]; then
+          #   NEWMAN_CMD="${NEWMAN_CMD} --folder \"${{ github.event.inputs.folder_name }}\""
+          # fi
           
           # Payload file path is now hardcoded as requested
           NEWMAN_CMD="${NEWMAN_CMD} -d \"tests/payloads/testdata.json\""
@@ -123,18 +214,24 @@ jobs:
           NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=${{ github.event.inputs.api_url }}"
           NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method=${{ github.event.inputs.http_method }}"
           
-          if [ -n "${{ github.event.inputs.auth_config_json }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_config_json=${{ github.event.inputs.auth_config_json }}"
+          # Set the username and password as global variables
+          if [ -n "${{ github.event.inputs.username }}" ]; then
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var username=${{ github.event.inputs.username }}"
           fi
           
+          if [ -n "${{ github.event.inputs.password }}" ]; then
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var password=${{ github.event.inputs.password }}"
+          fi
+          
+          # Print the final command for debugging purposes
           echo "Executing command: ${NEWMAN_CMD}"
-
+          
           # Run the final command
           ${NEWMAN_CMD} --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
 
       - name: Upload HTML report artifact
         # This conditional ensures the step always runs
-        if: always()
+        # if: always()
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
