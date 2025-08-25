@@ -81,14 +81,11 @@ on:
         description: 'JSON for Authentication (e.g., { "type": "Bearer", "token": "your_token" })'
         required: false
         type: string
-      payload_file:
-        description: 'Payload file path (e.g., tests/payloads/data.json)'
-        required: false
-        type: string
       folder_name:
         description: 'Optional: Specific folder in the collection to run'
         required: false
         type: string
+
 
 jobs:
   run-api-tests:
