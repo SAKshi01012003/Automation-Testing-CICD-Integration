@@ -173,10 +173,10 @@ on:
         description: 'Password for Basic Authentication'
         required: false
         type: string
-      folder_name:
-        description: 'Optional: Specific folder in the collection to run'
-        required: false
-        type: string
+      # folder_name:
+      #   description: 'Optional: Specific folder in the collection to run'
+      #   required: false
+      #   type: string
 
 jobs:
   run-api-tests:
@@ -209,7 +209,7 @@ jobs:
           # fi
           
           # Payload file path is now hardcoded as requested
-          NEWMAN_CMD="${NEWMAN_CMD} -d \"tests/payloads/testdata.json\""
+          # NEWMAN_CMD="${NEWMAN_CMD} -d \"tests/payloads/testdata.json\""
           
           # Add global variables from user inputs
           NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=${{ github.event.inputs.api_url }}"
