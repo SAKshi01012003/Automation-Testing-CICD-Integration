@@ -36,8 +36,8 @@
 #           # Use Newman to run the collection and generate the HTML report
 #           # The -r flag specifies the reporters: cli (for console output) and htmlextra (for HTML report)
 #           # The --reporter-htmlextra-export flag defines the output file path
-#            newman run tests/api_collection.json --folder "Response Validation Tests" -d "tests/payloads/testdata.json"  --reporters cli,htmlextra --reporter-htmlextra-export results_report.html      - name: Upload HTML report artifact
-#       - name: Upload HTML report artifact
+#       - name: Upload HTML report artifact#            newman run tests/api_collection.json --folder "Response Validation Tests" -d "tests/payloads/testdata.json"  --reporters cli,htmlextra --reporter-htmlextra-export results_report.html      - name: Upload HTML report artifact
+
 #         # This conditional ensures the step always runs
 #         if: always()
 #         uses: actions/upload-artifact@v4
@@ -53,13 +53,13 @@ name: API Testing
 
 on:
   # This trigger runs the workflow when files are pushed
-  push:
-    branches:
-      - main
-    paths:
-      - 'tests/api_collection.json'
-      - 'tests/payloads/**'
-      - 'tests/test_data.json'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'tests/api_collection.json'
+  #     - 'tests/payloads/**'
+  #     - 'tests/test_data.json'
   
   # This trigger allows for manual runs with user inputs
   workflow_dispatch:
@@ -114,21 +114,19 @@ jobs:
         run: |
           NEWMAN_CMD="newman run tests/api_collection.json"
           
-          # Add folder flag if provided
-          if [ "${{ github.event.inputs.folder_name }}" != "" ]; then
+          # Add folder flag if provided. Using -n check to avoid errors.
+          if [ -n "${{ github.event.inputs.folder_name }}" ]; then
             NEWMAN_CMD="${NEWMAN_CMD} --folder \"${{ github.event.inputs.folder_name }}\""
           fi
           
-          # Add payload file if provided
-          if [ "${{ github.event.inputs.payload_file }}" != "" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} -d \"${{ github.event.inputs.payload_file }}\""
-          fi
+          # Payload file path is now hardcoded as requested
+          NEWMAN_CMD="${NEWMAN_CMD} -d \"tests/payloads/testdata.json\""
           
           # Add global variables from user inputs
           NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=${{ github.event.inputs.api_url }}"
           NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method=${{ github.event.inputs.http_method }}"
           
-          if [ "${{ github.event.inputs.auth_config_json }}" != "" ]; then
+          if [ -n "${{ github.event.inputs.auth_config_json }}" ]; then
             NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_config_json=${{ github.event.inputs.auth_config_json }}"
           fi
           
@@ -142,5 +140,3 @@ jobs:
         with:
           name: api-test-report
           path: results_report.html
-
-
