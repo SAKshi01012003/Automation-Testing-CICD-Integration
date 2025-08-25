@@ -200,8 +200,8 @@ jobs:
       - name: Run Postman Collection with Newman
         id: run_newman_tests
         run: |
-          # NEWMAN_CMD="newman run tests/api_collection.json"
-          NEWMAN_CMD="newman run \"tests/api_collection.json\""
+          NEWMAN_CMD="newman run tests/api_collection.json"
+          # NEWMAN_CMD="newman run \"tests/api_collection.json\""
           
           # Add folder flag if provided. Using -n check to avoid errors.
           # if [ -n "${{ github.event.inputs.folder_name }}" ]; then
