@@ -36,8 +36,7 @@ jobs:
           # Use Newman to run the collection and generate the HTML report
           # The -r flag specifies the reporters: cli (for console output) and htmlextra (for HTML report)
           # The --reporter-htmlextra-export flag defines the output file path
-          newman run tests/api_collection.json --folder "Response Validation Tests" --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
-      - name: Upload HTML report artifact
+          newman run tests/api_collection.json --folder "Response Validation Tests" -d "tests/payloads/testdata.json"  --reporters cli,htmlextra --reporter-htmlextra-export results_report.html      - name: Upload HTML report artifact
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
