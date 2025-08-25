@@ -127,6 +127,8 @@ jobs:
             NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_config_json=${{ github.event.inputs.auth_config_json }}"
           fi
           
+          echo "Executing command: ${NEWMAN_CMD}"
+
           # Run the final command
           ${NEWMAN_CMD} --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
 
