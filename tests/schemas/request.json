@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "properties": {
+        "name": { "type": "string" },
+        "email": { 
+            "type": "string", 
+            "format": "email" 
+        },
+        "role": { "type": "string" },
+        "id": { "type": "number" },
+        "active": { "type": "boolean" }
+    },
+    "required": ["name", "email", "role", "id", "active"]
+}
