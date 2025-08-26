@@ -38,7 +38,7 @@
 							"// Clear any existing authorization headers\r",
 							"pm.request.headers.remove('Authorization');\r",
 							"\r",
-							"if (authType === 'Basic Auth' && authUsername && authPassword) {\r",
+							"if (authType === 'Basic' && authUsername && authPassword) {\r",
 							"    \r",
 							"    const credentials = btoa(`${authUsername}:${authPassword}`);\r",
 							"    pm.request.headers.add({\r",
