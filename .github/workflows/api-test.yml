@@ -232,7 +232,7 @@ jobs:
 
       - name: Upload HTML report artifact
         # This conditional ensures the step always runs
-        # if: always()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
