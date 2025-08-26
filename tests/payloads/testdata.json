@@ -1,7 +1,6 @@
 [
 {
   "id": 1000,
-  "name": true,
   "email": "Vaish@gmail.com",
   "role":"Developer",
   "active": true
