@@ -130,7 +130,7 @@ jobs:
           ${NEWMAN_CMD} --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
 
       - name: Upload HTML report artifact
-        # if: always()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
