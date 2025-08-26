@@ -48,10 +48,10 @@ on:
         required: false
         type: string
       # Other existing inputs
-      folder_name:
-        description: 'Optional: Specific folder in the collection to run'
-        required: false
-        type: string
+      # folder_name:
+      #   description: 'Optional: Specific folder in the collection to run'
+      #   required: false
+      #   type: string
       # payload_file:
       #   description: 'Payload file path (e.g., tests/payloads/data.json)'
       #   required: false
@@ -82,43 +82,44 @@ jobs:
           NEWMAN_CMD="newman run tests/api_collection.json"
           
           # Add folder flag if provided. Using -n check to avoid errors.
-          if [ -n "${{ github.event.inputs.folder_name }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --folder \"${{ github.event.inputs.folder_name }}\""
-          fi
+          # if [ -n "${{ github.event.inputs.folder_name }}" ]; then
+          #   NEWMAN_CMD="${NEWMAN_CMD} --folder \"${{ github.event.inputs.folder_name }}\""
+          # fi
           
           # Payload file path is now hardcoded as requested
           # if [ -n "${{ github.event.inputs.payload_file }}" ]; then
           #   NEWMAN_CMD="${NEWMAN_CMD} -d \"${{ github.event.inputs.payload_file }}\""
           # fi
-          NEWMAN_CMD="${NEWMAN_CMD} -d tests/payloads/testdata.json "
+          NEWMAN_CMD="${NEWMAN_CMD} -d tests/payloads/testdata.json"
 
           
           # Add global variables from user inputs
           # Quotes are used to handle spaces in the string passed to Newman.
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url= ${{ github.event.inputs.api_url }}"
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method= ${{ github.event.inputs.http_method }}"
+          # The replace function is used to handle potential extra quotes from the UI.
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=\"${{ github.event.inputs.api_url | replace('"', '') }}\""
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method=\"${{ github.event.inputs.http_method | replace('"', '') }}\""
           
           # The correct way to handle auth_type with a space is to quote the variable.
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_type= ${{ github.event.inputs.auth_type }}"
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_type=\"${{ github.event.inputs.auth_type | replace('"', '') }}\""
           
           if [ -n "${{ github.event.inputs.auth_username }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_username= ${{ github.event.inputs.auth_username }}"
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_username=\"${{ github.event.inputs.auth_username | replace('"', '') }}\""
           fi
           
           if [ -n "${{ github.event.inputs.auth_password }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_password= ${{ github.event.inputs.auth_password }}"
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_password=\"${{ github.event.inputs.auth_password | replace('"', '') }}\""
           fi
           
           if [ -n "${{ github.event.inputs.oauth2_token }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var oauth2_token= ${{ github.event.inputs.oauth2_token }}"
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var oauth2_token=\"${{ github.event.inputs.oauth2_token | replace('"', '') }}\""
           fi
           
           if [ -n "${{ github.event.inputs.input_schema_file }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var input_schema_file= ${{ github.event.inputs.input_schema_file }}"
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var input_schema_file=\"${{ github.event.inputs.input_schema_file | replace('"', '') }}\""
           fi
           
           if [ -n "${{ github.event.inputs.response_schema_file }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var response_schema_file= ${{ github.event.inputs.response_schema_file }}"
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var response_schema_file=\"${{ github.event.inputs.response_schema_file | replace('"', '') }}\""
           fi
           
           # Print the final command for debugging purposes
@@ -128,7 +129,7 @@ jobs:
           ${NEWMAN_CMD} --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
 
       - name: Upload HTML report artifact
-        # if: always()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
