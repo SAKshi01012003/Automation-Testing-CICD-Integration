@@ -115,12 +115,29 @@ jobs:
             NEWMAN_CMD="${NEWMAN_CMD} --global-var oauth2_token=\"${{ github.event.inputs.oauth2_token }}\""
           fi
           
+          # if [ -n "${{ github.event.inputs.input_schema_file }}" ]; then
+          #   NEWMAN_CMD="${NEWMAN_CMD} --global-var input_schema_file=\"${{ github.event.inputs.input_schema_file }}\""
+          # fi
+
           if [ -n "${{ github.event.inputs.input_schema_file }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var input_schema_file=\"${{ github.event.inputs.input_schema_file }}\""
+              INPUT_SCHEMA_CONTENT=$(cat ${{ github.event.inputs.input_schema_file }})
+          fi
+          
+          # if [ -n "${{ github.event.inputs.response_schema_file }}" ]; then
+          #   NEWMAN_CMD="${NEWMAN_CMD} --global-var response_schema_file=\"${{ github.event.inputs.response_schema_file }}\""
+          # fi
+
+          if [ -n "${{ github.event.inputs.response_schema_file }}" ]; then
+              RESPONSE_SCHEMA_CONTENT=$(cat ${{ github.event.inputs.response_schema_file }})
+          fi
+
+                    # Add the schema content as global variables
+          if [ -n "${{ github.event.inputs.input_schema_file }}" ]; then
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var input_schema_content=\"${INPUT_SCHEMA_CONTENT}\""
           fi
           
           if [ -n "${{ github.event.inputs.response_schema_file }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var response_schema_file=\"${{ github.event.inputs.response_schema_file }}\""
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var response_schema_content=\"${RESPONSE_SCHEMA_CONTENT}\""
           fi
           
           # Print the final command for debugging purposes
