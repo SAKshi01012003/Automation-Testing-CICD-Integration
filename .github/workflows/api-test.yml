@@ -24,7 +24,7 @@ on:
         type: choice
         options:
           - none
-          - Basic Auth
+          - Advance Auth
           - OAuth2
       auth_username:
         description: 'Username for Basic Auth'
