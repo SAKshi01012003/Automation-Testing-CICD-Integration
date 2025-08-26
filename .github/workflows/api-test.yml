@@ -23,9 +23,9 @@ on:
         required: true
         type: choice
         options:
-          - none
-          - Basic
-          - OAuth2
+          - 0
+          - 1
+          - 2
       auth_username:
         description: 'Username for Basic Auth'
         required: false
