@@ -90,6 +90,8 @@
 							"            } catch (e) {\r",
 							"                throw new Error(\"❌ Request body is not valid JSON!\");\r",
 							"            }\r",
+							"            console.log(\"Schemaa\",schema)\r",
+							"            console.log(\"palyload data\", requestData)\r",
 							"\r",
 							"            const valid = validate(requestData);\r",
 							"            \r",
