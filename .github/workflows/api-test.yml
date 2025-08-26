@@ -52,10 +52,10 @@ on:
         description: 'Optional: Specific folder in the collection to run'
         required: false
         type: string
-      payload_file:
-        description: 'Payload file path (e.g., tests/payloads/data.json)'
-        required: false
-        type: string
+      # payload_file:
+      #   description: 'Payload file path (e.g., tests/payloads/data.json)'
+      #   required: false
+      #   type: string
 
 jobs:
   run-api-tests:
@@ -87,9 +87,11 @@ jobs:
           fi
           
           # Payload file path is now hardcoded as requested
-          if [ -n "${{ github.event.inputs.payload_file }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} -d \"${{ github.event.inputs.payload_file }}\""
-          fi
+          # if [ -n "${{ github.event.inputs.payload_file }}" ]; then
+          #   NEWMAN_CMD="${NEWMAN_CMD} -d \"${{ github.event.inputs.payload_file }}\""
+          # fi
+          NEWMAN_CMD="${NEWMAN_CMD} -d tests/payloads/testdata.json "
+
           
           # Add global variables from user inputs
           # Quotes are used to handle spaces in the string passed to Newman.
