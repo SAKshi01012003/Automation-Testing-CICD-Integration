@@ -95,30 +95,30 @@ jobs:
           
           # Add global variables from user inputs
           # Quotes are used to handle spaces in the string passed to Newman.
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=\"${{ github.event.inputs.api_url }}\""
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method=\"${{ github.event.inputs.http_method }}\""
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url= ${{ github.event.inputs.api_url }}"
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method= ${{ github.event.inputs.http_method }}"
           
           # The correct way to handle auth_type with a space is to quote the variable.
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_type=\"${{ github.event.inputs.auth_type }}\""
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_type= ${{ github.event.inputs.auth_type }}"
           
           if [ -n "${{ github.event.inputs.auth_username }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_username=\"${{ github.event.inputs.auth_username }}\""
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_username= ${{ github.event.inputs.auth_username }}"
           fi
           
           if [ -n "${{ github.event.inputs.auth_password }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_password=\"${{ github.event.inputs.auth_password }}\""
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_password= ${{ github.event.inputs.auth_password }}"
           fi
           
           if [ -n "${{ github.event.inputs.oauth2_token }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var oauth2_token=\"${{ github.event.inputs.oauth2_token }}\""
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var oauth2_token= ${{ github.event.inputs.oauth2_token }}"
           fi
           
           if [ -n "${{ github.event.inputs.input_schema_file }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var input_schema_file=\"${{ github.event.inputs.input_schema_file }}\""
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var input_schema_file= ${{ github.event.inputs.input_schema_file }}"
           fi
           
           if [ -n "${{ github.event.inputs.response_schema_file }}" ]; then
-            NEWMAN_CMD="${NEWMAN_CMD} --global-var response_schema_file=\"${{ github.event.inputs.response_schema_file }}\""
+            NEWMAN_CMD="${NEWMAN_CMD} --global-var response_schema_file= ${{ github.event.inputs.response_schema_file }}"
           fi
           
           # Print the final command for debugging purposes
