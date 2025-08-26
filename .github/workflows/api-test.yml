@@ -24,7 +24,7 @@ on:
         type: choice
         options:
           - none
-          - Advance Auth
+          - Basic Auth
           - OAuth2
       auth_username:
         description: 'Username for Basic Auth'
@@ -52,10 +52,10 @@ on:
         description: 'Optional: Specific folder in the collection to run'
         required: false
         type: string
-      # payload_file:
-      #   description: 'Payload file path (e.g., tests/payloads/data.json)'
-      #   required: false
-      #   type: string
+      payload_file:
+        description: 'Payload file path (e.g., tests/payloads/data.json)'
+        required: false
+        type: string
 
 jobs:
   run-api-tests:
@@ -79,23 +79,24 @@ jobs:
       - name: Run Postman Collection with Newman
         id: run_newman_tests
         run: |
-          NEWMAN_CMD="newman run tests/api_collection.json"
+          NEWMAN_CMD="newman run \"tests/api_collection.json\""
           
           # Add folder flag if provided. Using -n check to avoid errors.
           if [ -n "${{ github.event.inputs.folder_name }}" ]; then
             NEWMAN_CMD="${NEWMAN_CMD} --folder \"${{ github.event.inputs.folder_name }}\""
           fi
           
-          # # Payload file path is now hardcoded as requested
-          # if [ -n "${{ github.event.inputs.payload_file }}" ]; then
-          #   NEWMAN_CMD="${NEWMAN_CMD} -d \"${{ github.event.inputs.payload_file }}\""
-          # fi
-          NEWMAN_CMD="${NEWMAN_CMD} -d tests/payloads/testdata.json "
-
+          # Payload file path is now hardcoded as requested
+          if [ -n "${{ github.event.inputs.payload_file }}" ]; then
+            NEWMAN_CMD="${NEWMAN_CMD} -d \"${{ github.event.inputs.payload_file }}\""
+          fi
           
           # Add global variables from user inputs
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=${{ github.event.inputs.api_url }}"
-          NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method=${{ github.event.inputs.http_method }}"
+          # Quotes are used to handle spaces in the string passed to Newman.
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var api_url=\"${{ github.event.inputs.api_url }}\""
+          NEWMAN_CMD="${NEWMAN_CMD} --global-var http_method=\"${{ github.event.inputs.http_method }}\""
+          
+          # The correct way to handle auth_type with a space is to quote the variable.
           NEWMAN_CMD="${NEWMAN_CMD} --global-var auth_type=\"${{ github.event.inputs.auth_type }}\""
           
           if [ -n "${{ github.event.inputs.auth_username }}" ]; then
@@ -125,7 +126,7 @@ jobs:
           ${NEWMAN_CMD} --reporters cli,htmlextra --reporter-htmlextra-export results_report.html
 
       - name: Upload HTML report artifact
-        # if: always()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
